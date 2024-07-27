@@ -1,4 +1,4 @@
-'''
+"""
 Задача 6
 Напишите программу банкомат.
 
@@ -10,5 +10,73 @@
 6. Нельзя снять больше, чем на счёте
 7. При привышении суммы в 5000000,вычитать налог на богатство 10% перед каждой операцией, даже ошибочной
 8. Любое действие выводит сумму денег
-'''
+"""
 
+balance = 0  # Начальная сумма равна нулю
+transaction_count = 0  # Счетчик транзакций
+
+while True:
+    tax_deducted = 0
+    commission_deducted = 0
+    interest_added = 0
+
+    # Вычитание налога на богатство при превышении суммы в 5,000,000
+    if balance > 5000000:
+        tax_deducted = balance * 0.1
+        balance -= tax_deducted
+        print(f"Налог на богатство 10% составил: {tax_deducted:.2f} условных единиц")
+
+    print(f"Текущая сумма на счету: {balance:.2f} условных единиц")
+
+    # Запрос действия у пользователя
+    actions = {"1": "пополнить", "2": "снять", "3": "выйти"}
+    action = actions.get(
+        input("Выберите действие (1 - пополнить, 2 - снять, 3 - выйти): "), "3"
+    )
+
+    if action in ["пополнить", "снять"]:
+        try:
+            amount = int(input("Введите сумму кратную 50: "))
+
+            # Проверка, что сумма кратна 50 и не отрицательная
+            if amount % 50 != 0:
+                print("Сумма должна быть кратна 50.")
+                continue
+            if amount <= 0:
+                print("Сумма должна быть положительной.")
+                continue
+
+            if action == "пополнить":
+                balance += amount
+                transaction_count += 1
+                print(f"Сумма {amount} успешно пополнена.")
+            elif action == "снять":
+                commission = max(30, min(600, amount * 0.015))
+                commission_deducted = commission
+                if amount + commission <= balance:
+                    balance -= amount + commission
+                    transaction_count += 1
+                    print(
+                        f"Сумма {amount} успешно снята. Комиссия за снятие составила: {commission:.2f} условных единиц."
+                    )
+                else:
+                    print("Недостаточно средств на счету.")
+                    continue
+
+            # Начисление процентов после каждой третьей транзакции
+            if transaction_count % 3 == 0:
+                interest = balance * 0.03
+                balance += interest
+                interest_added = interest
+                print(
+                    f"Начислены проценты в размере 3%: {interest:.2f} условных единиц"
+                )
+
+        except ValueError:
+            print("Пожалуйста, введите целое число.")
+
+    elif action == "выйти":
+        print(f"Операция завершена. Конечная сумма: {balance:.2f} условных единиц")
+        break
+    else:
+        print("Неверная команда. Пожалуйста, попробуйте еще раз.")
