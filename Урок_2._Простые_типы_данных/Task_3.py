@@ -37,14 +37,12 @@ def convert_number(num: int) -> tuple[str, str, str]:
     return binary, octal, string
 
 
-# Пример использования
 num = int(input("Введите целое число: "))
 binary, octal, string = convert_number(num)
 print("Двоичное представление:", binary)
 print("Восьмеричное представление:", octal)
 print("Строковое представление:", string)
 
-# Проверка результата с использованием встроенных функций bin и oct
 print("Проверка:")
 print("Двоичное представление (bin):", bin(num)[2:])
 print("Восьмеричное представление (oct):", oct(num)[2:])
